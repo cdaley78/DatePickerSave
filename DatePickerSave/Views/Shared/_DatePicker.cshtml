@@ -1,0 +1,14 @@
+﻿@*<p>@TempData["datepickerval"]</p>*@
+<input id="datePicker" name="datePicker" value="@TempData["datepickerval"]" type="date" />
+
+<script>
+
+    document.getElementById("datePicker").onchange = function(event) {
+        fetch("@Url.Action("UpdateDate", "Home")", {
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ date: this.value })
+        })
+    }
+
+</script>
