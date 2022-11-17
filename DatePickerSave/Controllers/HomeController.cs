@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DatePickerSave.Models;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Globalization;
 
@@ -6,31 +7,44 @@ namespace DatePickerSave.Controllers
 {
     public class HomeController : Controller
     {
+        const string _startDateKey = "StartDate";
+
         public IActionResult Index()
         {
-            CheckDatePicker();
+            var vm = new DateModel
+            {
+                StartDate = SetPeekDate(),
+                EndDate = SetDateToString(DateTime.Now)
+            };
 
-            return View();
+            return View(vm);
         }
 
         public IActionResult Other()
         {
-            CheckDatePicker();
+            var vm = new DateModel
+            {
+                StartDate = SetPeekDate(),
+                EndDate = SetDateToString(DateTime.Now)
+            };
 
-            return View();
+            return View(vm);
         }
 
-        private void CheckDatePicker()
+        private string SetPeekDate()
         {
-            if (!TempData.ContainsKey("datepickerval"))
+            string myDate;
+
+            if (!TempData.ContainsKey(_startDateKey))
             {
-                TempData["datepickerval"] = SetDateToString(DateTime.Now);
+                myDate = SetDateToString(DateTime.Now);
             }
             else
             {
-                TempData["datepickerval"] = SetDateToString(DateTime.Parse(TempData["datepickerval"].ToString()));
-                TempData.Keep("datepickerval");
+                myDate = SetDateToString(DateTime.Parse(TempData.Peek(_startDateKey).ToString()));
             }
+
+            return myDate;
         }
 
         private string SetDateToString(DateTime date)
@@ -41,15 +55,9 @@ namespace DatePickerSave.Controllers
         [HttpPost]
         public JsonResult UpdateDate([FromBody] DateModel model)
         {
-            TempData["datepickerval"] = SetDateToString(DateTime.Parse(model.date));
-            TempData.Keep("datepickerval");
+            TempData[_startDateKey] = SetDateToString(DateTime.Parse(model.StartDate));
 
             return Json(null);
         }
-    }
-
-    public class DateModel
-    {
-        public string date { get; set; }
     }
 }
