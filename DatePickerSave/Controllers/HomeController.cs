@@ -55,7 +55,7 @@ namespace DatePickerSave.Controllers
         [HttpPost]
         public JsonResult UpdateDate([FromBody] DateModel model)
         {
-            TempData[_startDateKey] = SetDateToString(DateTime.Parse(model.StartDate));
+            TempData[_startDateKey] = model.StartDate;
 
             return Json(null);
         }
